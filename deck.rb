@@ -1,4 +1,6 @@
-require './card.rb'
+# frozen_string_literal: true
+
+require './card'
 
 class Deck
   attr_reader :deck_of_cards
@@ -10,9 +12,6 @@ class Deck
         @deck_of_cards << Card.new(suit, rank)
       end
     end
-  end
-
-  def shuffle_deck
-    @deck_of_cards.shuffle! unless @deck_of_cards.nil? || @deck_of_cards.size == 0
+    @deck_of_cards.shuffle!
   end
 end
