@@ -3,7 +3,7 @@
 require './card'
 
 class Deck
-  attr_reader :deck_of_cards
+  attr_accessor :deck_of_cards, :card
 
   def initialize
     @deck_of_cards = []
@@ -13,5 +13,9 @@ class Deck
       end
     end
     @deck_of_cards.shuffle!
+  end
+
+  def take_card
+    @card = @deck_of_cards.pop
   end
 end
