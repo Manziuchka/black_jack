@@ -48,4 +48,35 @@ class Game
   def add_card(player)
     player.hand.cards << @deck.take_card
   end
+
+  def winner
+    return @player if player_score > dealer_score && not_overdo(@player)
+    return @dealer if dealer_score > player_score && not_overdo(@dealer)
+
+    [@player, @dealer]
+  end
+
+  def payout
+    @winner = winner
+    if @winner.instance_of?(Array)
+      @pay = @bank / @winner.size
+      @winner.each { |winner| winner.bank_limit += @pay }
+    else
+      @winner.bank_limit += @bank
+    end
+  end
+
+  private
+
+  def player_score
+    @player.hand.scoring
+  end
+
+  def dealer_score
+    @dealer.hand.scoring
+  end
+
+  def not_overdo(player)
+    player.hand.scoring <= WIN_SCORE
+  end
 end

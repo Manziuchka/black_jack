@@ -4,7 +4,7 @@ require_relative 'deck'
 require_relative 'hand'
 
 class Player
-  attr_accessor :name, :bank, :hand
+  attr_accessor :name, :bank_limit, :hand
 
   def initialize(name)
     @name = name
