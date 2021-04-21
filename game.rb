@@ -2,7 +2,7 @@
 
 require './dealer'
 require './deck'
-require './hand'
+# require './hand'
 
 class Game
   attr_accessor :player, :dealer, :deck, :bank
