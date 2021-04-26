@@ -2,7 +2,7 @@
 
 require './dealer'
 require './deck'
-# require './hand'
+require './hand'
 
 class Game
   attr_accessor :player, :dealer, :deck, :bank
@@ -25,9 +25,9 @@ class Game
     'A' => 11
   }.freeze
 
-  def initialize
+  def initialize(name)
     @dealer = Dealer.new
-    @player = Player.new('Mike')
+    @player = Player.new(name)
     @deck = Deck.new
     @bank = 0
   end
@@ -63,6 +63,14 @@ class Game
       @winner.each { |winner| winner.bank_limit += @pay }
     else
       @winner.bank_limit += @bank
+    end
+  end
+
+  def dealer_action
+    if @dealer.hand.enough
+      puts "Карт у диллера достаточно"
+    else
+      self.add_card(@dealer)
     end
   end
 

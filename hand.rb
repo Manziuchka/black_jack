@@ -19,8 +19,14 @@ class Hand
     end
     @score
   end
+  
+  def show_cards
+    @show = []
+    self.cards.each{|card| @show << "[#{card.rank}#{card.suit}]"}
+    @show.join
+  end
 
   def enough
-    @score >= 17
+    scoring.to_i >= 17
   end
 end
