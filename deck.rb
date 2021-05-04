@@ -16,6 +16,14 @@ class Deck
   end
 
   def take_card
-    @card = @deck_of_cards.pop
+    if card_amount.positive?
+      @card = @deck_of_cards.pop
+    else
+      raise 'Карт больше нет'
+    end
+  end
+
+  def card_amount
+    @deck_of_cards.size
   end
 end

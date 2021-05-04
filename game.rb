@@ -33,9 +33,13 @@ class Game
   end
 
   def make_bet
-    @player.place_bet
-    @dealer.place_bet
-    @bank = BET * 2
+    if (@player.bank_limit && @dealer.bank_limit) >= BET
+      @player.place_bet
+      @dealer.place_bet
+      @bank = BET * 2
+    else
+      raise 'Недостаточно средств'
+    end
   end
 
   def deal_cards
@@ -46,12 +50,12 @@ class Game
   end
 
   def add_card(player)
-    player.hand.cards << @deck.take_card
+    player.hand.cards << @deck.take_card if player.hand.cards.size < 3
   end
 
   def winner
-    return @player if player_score > dealer_score && not_overdo(@player)
-    return @dealer if dealer_score > player_score && not_overdo(@dealer)
+    return @player if !overdo(@player) && (player_score > dealer_score || overdo(@dealer))
+    return @dealer if !overdo(@dealer) && (dealer_score > player_score || overdo(@player))
 
     [@player, @dealer]
   end
@@ -67,11 +71,7 @@ class Game
   end
 
   def dealer_action
-    if @dealer.hand.enough
-      puts "Карт у диллера достаточно"
-    else
-      self.add_card(@dealer)
-    end
+    add_card(@dealer) unless @dealer.hand.enough
   end
 
   private
@@ -84,7 +84,7 @@ class Game
     @dealer.hand.scoring
   end
 
-  def not_overdo(player)
-    player.hand.scoring <= WIN_SCORE
+  def overdo(player)
+    player.hand.scoring > WIN_SCORE
   end
 end

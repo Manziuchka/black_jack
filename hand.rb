@@ -19,11 +19,15 @@ class Hand
     end
     @score
   end
-  
+
   def show_cards
     @show = []
-    self.cards.each{|card| @show << "[#{card.rank}#{card.suit}]"}
+    cards.each { |card| @show << "[#{card.rank}#{card.suit}]" }
     @show.join
+  end
+
+  def clear_hand
+    @cards = []
   end
 
   def enough
