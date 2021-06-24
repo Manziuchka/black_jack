@@ -1,8 +1,9 @@
 # frozen_string_literal: true
 
 require './dealer'
-require './deck'
-require './hand'
+# require './deck'
+# require './hand'
+require_relative 'interface'
 
 class Game
   attr_accessor :player, :dealer, :deck, :bank
@@ -25,11 +26,45 @@ class Game
     'A' => 11
   }.freeze
 
-  def initialize(name)
+  def initialize
     @dealer = Dealer.new
-    @player = Player.new(name)
+    @player = Player.new(Interface.player_name)
     @deck = Deck.new
     @bank = 0
+  end
+
+  def round
+    make_bet
+    deal_cards
+    Interface.new_round
+    loop do
+      if (@player.hand.cards.size == 3) && (@dealer.hand.cards.size == 3)
+        Interface.open_hand(self)
+        payout
+        Interface.show_bank(self)
+      end
+      Interface.help
+      choice = gets.to_i
+      case choice
+      when 1
+        Interface.show_player_cards(self)
+      when 2
+        add_card_and_dealer_move
+      when 3
+        dealer_action
+        Interface.skip_move
+      when 4
+        Interface.open_hand(self)
+        payout
+        Interface.show_bank(self)
+      when 5
+        clear_hands
+        round
+      when 0
+        Interface.end_game
+        break
+      end
+    end
   end
 
   def make_bet
@@ -47,6 +82,17 @@ class Game
       add_card(@player)
       add_card(@dealer)
     end
+  end
+
+  def add_card_and_dealer_move
+    if @player.hand.cards.size < 3
+      add_card(@player)
+      Interface.add_card
+    else
+      Interface.overdo_error
+    end
+    Interface.dealer_turn
+    dealer_action
   end
 
   def add_card(player)
@@ -72,6 +118,19 @@ class Game
 
   def dealer_action
     add_card(@dealer) unless @dealer.hand.enough
+  end
+
+  def winner_name
+    if winner.instance_of?(Array)
+      Interface.dead_heat
+    else
+      winner.name
+    end
+  end
+
+  def clear_hands
+    @dealer.hand.clear_hand
+    @player.hand.clear_hand
   end
 
   private
